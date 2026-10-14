@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nakarat — Müzik Tahmin Oyunu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <header class="app-header">
+    <span class="logo">Nakarat</span>
+    <div class="score-pill" id="score-pill" hidden>
+      <strong id="score-value">0</strong>&nbsp;puan&nbsp;·&nbsp;<span id="rounds-value">0</span>&nbsp;tur
+    </div>
+  </header>
+
+  <!-- EKRAN 1 — Kategori seçimi -->
+  <section class="screen" id="screen-categories">
+    <h1>Ne dinlemek istersin?</h1>
+    <p class="subtitle">Bir tür seç. Sana o türden bir parça çalalım, adını ve sanatçısını sen bulmaya çalış.</p>
+    <div class="category-grid">
+      {% for key, cat in categories.items() %}
+      <button class="category-card theme-{{ cat.theme }}" data-category="{{ key }}" data-label="{{ cat.label }}">
+        <span class="category-label">{{ cat.label }}</span>
+      </button>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- EKRAN 2 — Yerel / Evrensel -->
+  <section class="screen" id="screen-scope" hidden>
+    <button class="back-link" data-target="screen-categories">← Türler</button>
+    <h1 id="scope-title">Yerel mi, evrensel mi?</h1>
+    <p class="subtitle">Belirli bir ülkeden mi çalsın, yoksa genel listeden mi?</p>
+    <div class="scope-grid">
+      <button class="scope-card" data-scope="yerel">
+        <span class="scope-title">Yerel</span>
+        <span class="scope-desc">Bir ülke seç, oranın listelerinden gelsin</span>
+      </button>
+      <button class="scope-card" data-scope="evrensel">
+        <span class="scope-title">Evrensel</span>
+        <span class="scope-desc">Global olarak öne çıkanlardan gelsin</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- EKRAN 3 — Ülke seçimi -->
+  <section class="screen" id="screen-country" hidden>
+    <button class="back-link" data-target="screen-scope">← Geri</button>
+    <h1>Hangi ülke?</h1>
+    <div class="country-grid">
+      {% for code, name in countries.items() %}
+      <button class="country-card" data-country="{{ code }}">{{ name }}</button>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- EKRAN 4 — Oyun -->
+  <section class="screen" id="screen-game" hidden>
+    <button class="back-link" data-target="screen-categories">← Türler</button>
+
+    <div class="game-card">
+      <div class="artwork-wrap">
+        <img id="artwork" alt="Albüm kapağı" />
+        <button class="play-button" id="play-button" aria-label="Çal / Duraklat">
+          <svg viewBox="0 0 24 24" id="icon-play"><path d="M8 5v14l11-7z"/></svg>
+          <svg viewBox="0 0 24 24" id="icon-pause" hidden><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+        </button>
+      </div>
+
+      <div class="eq-bars" id="eq-bars" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <audio id="audio" preload="none"></audio>
+
+      <form id="guess-form" class="guess-form" autocomplete="off">
+        <label>
+          Şarkı adı
+          <input type="text" id="title-guess" placeholder="Tahminin...">
+        </label>
+        <label>
+          Sanatçı
+          <input type="text" id="artist-guess" placeholder="Tahminin...">
+        </label>
+        <button type="submit" class="submit-btn" id="guess-btn">Tahmin Et</button>
+      </form>
+
+      <div class="result-panel" id="result-panel" hidden>
+        <p id="result-text"></p>
+        <button class="submit-btn" id="next-round-btn">Sonraki Şarkı</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
